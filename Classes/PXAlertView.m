@@ -401,7 +401,6 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 - (void)showBackgroundView
 {
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-        self.mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
         [self.mainWindow tintColorDidChange];
     }
     [UIView animateWithDuration:0.3 animations:^{
@@ -447,7 +446,6 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
                 [self dismissAlertAnimation];
             }
             if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-                self.mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
                 [self.mainWindow tintColorDidChange];
             }
             [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
