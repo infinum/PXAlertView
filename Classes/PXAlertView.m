@@ -20,12 +20,12 @@
 
 @end
 
-#define AlertViewWidth (self.view.bounds.size.width - 40.0)
-static const CGFloat AlertViewContentMargin = 20;
-static const CGFloat AlertViewVerticalElementSpace = 20;
+static const CGFloat AlertViewWidth = 270.0;
+static const CGFloat AlertViewContentMargin = 9;
+static const CGFloat AlertViewVerticalElementSpace = 10;
 static const CGFloat AlertViewButtonHeight = 50.0f;
 static const CGFloat AlertViewLineLayerWidth = 0.5;
-static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
+static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
 
 
 @interface PXAlertView () <TTTAttributedLabel>
@@ -36,6 +36,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UIView *alertView;
 @property (nonatomic) UILabel *titleLabel;
+@property (nonatomic) UIView *contentView;
 @property (nonatomic) UIScrollView *messageScrollView;
 @property (nonatomic) TTTAttributedLabel *messageLabel;
 @property (nonatomic) UIButton *cancelButton;
@@ -44,7 +45,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 @property (nonatomic) CGFloat buttonsY;
 @property (nonatomic) CALayer *verticalLine;
 @property (nonatomic) UITapGestureRecognizer *tap;
-@property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex, PXAlertView *alert);
+@property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex);
 
 @end
 
@@ -240,7 +241,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 {
     if(self.isVisible)
     {
-        CGRect keyboardFrameBeginRect = [[[notification userInfo] valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        CGRect keyboardFrameBeginRect = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
         if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8 && (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)) {
             keyboardFrameBeginRect = (CGRect){keyboardFrameBeginRect.origin.y, keyboardFrameBeginRect.origin.x, keyboardFrameBeginRect.size.height, keyboardFrameBeginRect.size.width};
         }
@@ -302,7 +303,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
         height = bounds.size.height;
     }
     
-    return CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, height + 20);
+    return CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, height);
 }
 
 - (UIButton *)genericButton
@@ -383,12 +384,6 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
     [[PXAlertViewStack sharedInstance] push:self];
 }
 
-- (void)dismiss
-{
-    self.completion = nil;
-    [self dismiss:nil animated:NO];
-}
-
 - (void)showInternal
 {
     [self.alertWindow addSubview:self.view];
@@ -438,7 +433,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
                     buttonIndex = index;
                 }
             }
-            self.completion(cancelled, buttonIndex, self);
+            self.completion(cancelled, buttonIndex);
         }
         
         if ([[[PXAlertViewStack sharedInstance] alertViews] count] == 1) {
@@ -682,7 +677,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
     [button setTitle:title forState:UIControlStateNormal];
     
     if (!self.cancelButton) {
-        button.titleLabel.font = [UIFont systemFontOfSize:17];
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:17];
         self.cancelButton = button;
         self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth, AlertViewButtonHeight);
     } else if (self.buttonsShouldStack) {
@@ -756,9 +751,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
 {
-    if ([self.delegate respondsToSelector:@selector(alertViewDidSelectLinkWithURL:)]) {
-        [self.delegate alertViewDidSelectLinkWithURL:url];
-    }
+    NSLog(@"TEST");
 }
 
 @end
