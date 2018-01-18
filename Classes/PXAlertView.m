@@ -302,7 +302,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
         height = bounds.size.height;
     }
     
-    return CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, height);
+    return CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, height + 20);
 }
 
 - (UIButton *)genericButton
