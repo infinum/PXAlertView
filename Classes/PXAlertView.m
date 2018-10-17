@@ -7,6 +7,7 @@
 //
 
 #import "PXAlertView.h"
+#import "TTTAttributedLabel.h"
 
 @interface PXAlertViewStack : NSObject
 
@@ -19,15 +20,15 @@
 
 @end
 
-static const CGFloat AlertViewWidth = 270.0;
-static const CGFloat AlertViewContentMargin = 9;
-static const CGFloat AlertViewVerticalElementSpace = 10;
+#define AlertViewWidth (self.view.bounds.size.width - 40.0)
+static const CGFloat AlertViewContentMargin = 20;
+static const CGFloat AlertViewVerticalElementSpace = 20;
 static const CGFloat AlertViewButtonHeight = 50.0f;
 static const CGFloat AlertViewLineLayerWidth = 0.5;
-static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
+static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 
 
-@interface PXAlertView ()
+@interface PXAlertView () <TTTAttributedLabel>
 
 @property (nonatomic) BOOL buttonsShouldStack;
 @property (nonatomic) UIWindow *mainWindow;
@@ -35,16 +36,15 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UIView *alertView;
 @property (nonatomic) UILabel *titleLabel;
-@property (nonatomic) UIView *contentView;
 @property (nonatomic) UIScrollView *messageScrollView;
-@property (nonatomic) UILabel *messageLabel;
+@property (nonatomic) TTTAttributedLabel *messageLabel;
 @property (nonatomic) UIButton *cancelButton;
 @property (nonatomic) UIButton *otherButton;
 @property (nonatomic) NSArray *buttons;
 @property (nonatomic) CGFloat buttonsY;
 @property (nonatomic) CALayer *verticalLine;
 @property (nonatomic) UITapGestureRecognizer *tap;
-@property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex);
+@property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex, PXAlertView *alert);
 
 @end
 
@@ -147,8 +147,13 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
             44}];
         self.messageScrollView.scrollEnabled = YES;
         
-        self.messageLabel = [[UILabel alloc] initWithFrame:(CGRect){0, 0,
+        self.messageLabel = [[TTTAttributedLabel alloc] initWithFrame:(CGRect){0, 0,
             self.messageScrollView.frame.size}];
+        self.messageLabel.delegate = self;
+        self.messageLabel.linkAttributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:15.0],
+                                             NSForegroundColorAttributeName: [UIColor darkGrayColor],
+                                             NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone),
+                                             };
         self.messageLabel.text = message;
         self.messageLabel.backgroundColor = [UIColor clearColor];
         self.messageLabel.textColor = [UIColor whiteColor];
@@ -235,7 +240,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
 {
     if(self.isVisible)
     {
-        CGRect keyboardFrameBeginRect = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+        CGRect keyboardFrameBeginRect = [[[notification userInfo] valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
         if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8 && (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight)) {
             keyboardFrameBeginRect = (CGRect){keyboardFrameBeginRect.origin.y, keyboardFrameBeginRect.origin.x, keyboardFrameBeginRect.size.height, keyboardFrameBeginRect.size.width};
         }
@@ -297,7 +302,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
         height = bounds.size.height;
     }
     
-    return CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, height);
+    return CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, height + 20);
 }
 
 - (UIButton *)genericButton
@@ -378,6 +383,12 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
     [[PXAlertViewStack sharedInstance] push:self];
 }
 
+- (void)dismiss
+{
+    self.completion = nil;
+    [self dismiss:nil animated:NO];
+}
+
 - (void)showInternal
 {
     [self.alertWindow addSubview:self.view];
@@ -428,7 +439,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
                     buttonIndex = index;
                 }
             }
-            self.completion(cancelled, buttonIndex);
+            self.completion(cancelled, buttonIndex, self);
         }
         
         if ([[[PXAlertViewStack sharedInstance] alertViews] count] == 1) {
@@ -673,7 +684,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
     [button setTitle:title forState:UIControlStateNormal];
     
     if (!self.cancelButton) {
-        button.titleLabel.font = [UIFont boldSystemFontOfSize:17];
+        button.titleLabel.font = [UIFont systemFontOfSize:17];
         self.cancelButton = button;
         self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth, AlertViewButtonHeight);
     } else if (self.buttonsShouldStack) {
@@ -726,6 +737,30 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 25;
 - (void)setTapToDismissEnabled:(BOOL)enabled
 {
     self.tap.enabled = enabled;
+}
+
+- (void)addLinkToStringInMessage:(NSString *)stringInMessage URL:(NSURL *)URL
+{
+    NSRange range = [self.messageLabel.text rangeOfString:stringInMessage];
+    
+    [self.messageLabel setText:self.messageLabel.text afterInheritingLabelAttributesAndConfiguringWithBlock:nil];
+    
+    [self.messageLabel addLinkToURL:URL withRange:range];
+}
+
+// Don't ask.......
+- (void)fixTTTAttributedLabelFormat
+{
+    [self.messageLabel setText:self.messageLabel.text afterInheritingLabelAttributesAndConfiguringWithBlock:nil];
+}
+
+#pragma mark - TTTAttributedLabelDelegate
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
+{
+    if ([self.delegate respondsToSelector:@selector(alertViewDidSelectLinkWithURL:)]) {
+        [self.delegate alertViewDidSelectLinkWithURL:url];
+    }
 }
 
 @end
