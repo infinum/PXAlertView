@@ -2,6 +2,28 @@
 
 PXAlertView is a UIAlertView replacement similar to the style in iOS 7 but with a block based API and the ability to customise the styling and add custom views.
 
+
+
+## Fork note
+
+_Original repo is not maintained any more, so keep all the changes here!_
+
+Added:
+
+* Option to stack buttons
+
+* Alert view link selection delegate
+* Cancel button text not to be bold
+* Dismiss completion
+
+Fixed:
+
+* Storyboard handling with Xcode 8+
+* Minor UI fixes
+* Removed `tintAdjustmentMode` changes as it caused some issues
+* Changed alert opacity to full to conform iOS 9+ UI
+* Keyboard height
+
 ## Preview
 ![Demo Animation](animation.gif)
 
