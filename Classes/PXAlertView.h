@@ -22,6 +22,7 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex,
 
 @property (nonatomic, getter = isVisible) BOOL visible;
 @property (nonatomic) UIView *contentView;
+@property (nonatomic, strong) NSString *message;
 @property (nonatomic, weak) id<PXAlertViewDelegate> delegate;
 
 + (instancetype)showAlertWithTitle:(NSString *)title;
