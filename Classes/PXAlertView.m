@@ -155,6 +155,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
                                              NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone),
                                              };
         self.messageLabel.text = message;
+        self.message = message;
         self.messageLabel.backgroundColor = [UIColor clearColor];
         self.messageLabel.textColor = [UIColor whiteColor];
         self.messageLabel.textAlignment = NSTextAlignmentCenter;
