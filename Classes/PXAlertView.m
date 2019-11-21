@@ -437,6 +437,17 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
             }
             self.completion(cancelled, buttonIndex, self);
         }
+
+        UIViewController *rootViewController = self.alertWindow.rootViewController;
+        UIView *alertView = rootViewController.view;
+        if (![rootViewController presentedViewController] && ![rootViewController presentingViewController]) {
+            [alertView removeFromSuperview];
+        } else {
+            [rootViewController dismissViewControllerAnimated:NO completion:^{
+                [alertView removeFromSuperview];
+            }];
+        }
+
         
         if ([[[PXAlertViewStack sharedInstance] alertViews] count] == 1) {
             if (animated) {
