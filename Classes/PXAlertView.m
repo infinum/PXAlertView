@@ -31,8 +31,6 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 @interface PXAlertView () <TTTAttributedLabel>
 
 @property (nonatomic) BOOL buttonsShouldStack;
-@property (nonatomic) UIWindow *mainWindow;
-@property (nonatomic) UIWindow *alertWindow;
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UIView *alertView;
 @property (nonatomic) UILabel *titleLabel;
