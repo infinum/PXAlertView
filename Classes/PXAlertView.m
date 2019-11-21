@@ -419,8 +419,6 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 
 - (void)dismiss:(id)sender animated:(BOOL)animated
 {
-    self.visible = NO;
-    
     [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
         self.alertView.alpha = 0;
         self.alertWindow.alpha = 0;
@@ -454,6 +452,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
                 self.alertWindow.rootViewController = nil;
                 self.alertWindow = nil;
             } completion:^(BOOL finished) {
+                self.visible = NO;
                 [self.mainWindow makeKeyAndVisible];
             }];
         }
