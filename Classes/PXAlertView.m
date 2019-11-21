@@ -438,35 +438,24 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
             self.completion(cancelled, buttonIndex, self);
         }
 
-        UIViewController *rootViewController = self.alertWindow.rootViewController;
-        UIView *alertView = rootViewController.view;
-        if (![rootViewController presentedViewController] && ![rootViewController presentingViewController]) {
-            [alertView removeFromSuperview];
-        } else {
-            [rootViewController dismissViewControllerAnimated:NO completion:^{
-                [alertView removeFromSuperview];
-            }];
+        if (animated) {
+            [self dismissAlertAnimation];
         }
-
-        
-        if ([[[PXAlertViewStack sharedInstance] alertViews] count] == 1) {
-            if (animated) {
-                [self dismissAlertAnimation];
-            }
-            if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-                [self.mainWindow tintColorDidChange];
-            }
-            [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
-                self.backgroundView.alpha = 0;
-                [self.alertWindow setHidden:YES];
-                [self.alertWindow removeFromSuperview];
-                self.alertWindow.rootViewController = nil;
-                self.alertWindow = nil;
-            } completion:^(BOOL finished) {
+        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+            [self.mainWindow tintColorDidChange];
+        }
+        [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
+            self.backgroundView.alpha = 0;
+            [self.alertWindow setHidden:YES];
+            [self.alertWindow removeFromSuperview];
+            self.alertWindow.rootViewController = nil;
+            self.alertWindow = nil;
+        } completion:^(BOOL finished) {
+            if ([[[PXAlertViewStack sharedInstance] alertViews] count] == 1) {
                 self.visible = NO;
                 [self.mainWindow makeKeyAndVisible];
-            }];
-        }
+            }
+        }];
         
         [[PXAlertViewStack sharedInstance] pop:self];
     }];
