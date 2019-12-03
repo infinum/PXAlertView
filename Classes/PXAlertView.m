@@ -9,15 +9,6 @@
 #import "PXAlertView.h"
 #import "TTTAttributedLabel.h"
 
-@implementation PXAlertWindow
-
-// Hack to keep alert on top of everything else (even keyboard!)
-- (UIWindowLevel) windowLevel {
-    return 20000000.000;
-}
-
-@end
-
 @interface PXAlertViewStack : NSObject
 
 @property (nonatomic) NSMutableArray *alertViews;
@@ -97,7 +88,8 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
     if (self) {
         self.mainWindow = [self windowWithLevel:UIWindowLevelNormal];
         
-        self.alertWindow = [[PXAlertWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.alertWindow.windowLevel = UIWindowLevelAlert;
         self.alertWindow.backgroundColor = [UIColor clearColor];
         self.alertWindow.rootViewController = self;
         

@@ -18,9 +18,6 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex,
 
 @end
 
-@interface PXAlertWindow: UIWindow
-@end
-
 @interface PXAlertView : UIViewController
 
 @property (nonatomic, getter = isVisible) BOOL visible;
@@ -29,7 +26,7 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex,
 @property (nonatomic, weak) id<PXAlertViewDelegate> delegate;
 
 @property (nonatomic) UIWindow *mainWindow;
-@property (nonatomic) PXAlertWindow *alertWindow;
+@property (nonatomic) UIWindow *alertWindow;
 
 + (instancetype)showAlertWithTitle:(NSString *)title;
 
