@@ -11,6 +11,8 @@
 
 @interface PXViewController ()
 
+@property (weak, nonatomic) IBOutlet UITextField *textField;
+
 @end
 
 @implementation PXViewController
