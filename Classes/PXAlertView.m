@@ -9,6 +9,15 @@
 #import "PXAlertView.h"
 #import "TTTAttributedLabel.h"
 
+@implementation PXAlertWindow
+
+- (UIWindowLevel)windowLevel
+{
+    return 90000.0;
+}
+
+@end
+
 @interface PXAlertViewStack : NSObject
 
 @property (nonatomic) NSMutableArray *alertViews;
@@ -88,8 +97,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
     if (self) {
         self.mainWindow = [self windowWithLevel:UIWindowLevelNormal];
         
-        self.alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.alertWindow.windowLevel = UIWindowLevelAlert;
+        self.alertWindow = [[PXAlertWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.alertWindow.backgroundColor = [UIColor clearColor];
         self.alertWindow.rootViewController = self;
         
