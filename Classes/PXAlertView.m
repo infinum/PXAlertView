@@ -458,7 +458,7 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
             self.alertWindow.rootViewController = nil;
             self.alertWindow = nil;
         } completion:^(BOOL finished) {
-            if ([[[PXAlertViewStack sharedInstance] alertViews] count] <= 1) {
+            if ([[[PXAlertViewStack sharedInstance] alertViews] count] < 1) {
                 self.visible = NO;
                 [self.mainWindow makeKeyAndVisible];
             }
