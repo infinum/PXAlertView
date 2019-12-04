@@ -13,7 +13,7 @@
 
 - (UIWindowLevel)windowLevel
 {
-    return 90000.0;
+    return 20000000.000;
 }
 
 @end
