@@ -398,7 +398,6 @@ static const CGFloat AlertViewVerticalEdgeMinMargin = 20;
 
 - (void)showInternal
 {
-    [self.alertWindow addSubview:self.view];
     [self.alertWindow makeKeyAndVisible];
     self.visible = YES;
     [self showBackgroundView];
